@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gopalkrushna Sahu — Portfolio</title>
+  <meta name="description" content="Portfolio of Gopalkrushna Sahu — CSE student at PMEC. Projects in Web Dev & ML. Smooth animations, infinite transitions, fully responsive."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%2300e5ff'/><text x='50' y='60' font-size='50' text-anchor='middle' fill='white'>G</text></svg>">
+  <!-- GSAP for silky animations -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --card:#0f1420;
+      --text:#e6f1ff;
+      --muted:#9fb3c8;
+      --accent:#00e5ff;
+      --accent2:#7a5cff;
+      --glass: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(80vw 80vw at 10% 10%, rgba(122,92,255,0.08), transparent 50%),
+                              radial-gradient(60vw 60vw at 90% 20%, rgba(0,229,255,0.08), transparent 40%),
+                              radial-gradient(40vw 40vw at 50% 90%, rgba(0,255,170,0.05), transparent 60%),
+                              var(--bg);
+      color:var(--text); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+
+    /* ====== Global Layout ====== */
+    .container{width:min(1140px, 92%); margin-inline:auto}
+    section{padding:100px 0}
+    .grid{display:grid; gap:24px}
+
+    /* ====== Floating Blobs (infinite animation) ====== */
+    .blob{position:fixed; inset:auto; z-index:-1; filter: blur(60px); opacity:0.55; mix-blend:screen}
+    .blob:nth-child(1){width:38vmax; height:38vmax; left:-12vmax; top:-8vmax; background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);
+      animation: blobFloat 18s linear infinite alternate}
+    .blob:nth-child(2){width:30vmax; height:30vmax; right:-10vmax; top:10vmax; background: radial-gradient(circle at 70% 30%, var(--accent2), transparent 60%);
+      animation: blobFloat2 22s linear infinite alternate}
+    .blob:nth-child(3){width:28vmax; height:28vmax; left:20vmax; bottom:-10vmax; background: radial-gradient(circle at 50% 50%, #00ffaa, transparent 60%);
+      animation: blobFloat3 26s linear infinite alternate}
+    @keyframes blobFloat{to{transform: translate(8vmax,6vmax) rotate(20deg) scale(1.08)}}
+    @keyframes blobFloat2{to{transform: translate(-6vmax,10vmax) rotate(-15deg) scale(1.1)}}
+    @keyframes blobFloat3{to{transform: translate(-12vmax,-6vmax) rotate(25deg) scale(1.12)}}
+
+    /* ====== Header / Nav ====== */
+    header{position:sticky; top:0; backdrop-filter: blur(10px); background:linear-gradient( to bottom, rgba(9,12,18,0.8), rgba(9,12,18,0.3)); border-bottom:1px solid var(--border); z-index:50}
+    .nav{display:flex; align-items:center; justify-content:space-between; height:70px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:0.3px}
+    .brand .dot{width:10px; height:10px; border-radius:50%; background:conic-gradient(from 0deg, var(--accent), var(--accent2), var(--accent)); box-shadow: 0 0 20px var(--accent)}
+    nav a{opacity:0.85}
+    nav a:hover{opacity:1}
+    .nav-links{display:flex; gap:24px; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:14px; background:linear-gradient(135deg, rgba(0,229,255,0.15), rgba(122,92,255,0.15)); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease}
+    .btn:hover{transform: translateY(-2px)}
+    .btn:active{transform: translateY(0)}
+
+    /* ====== Hero ====== */
+    .hero{min-height:86vh; display:grid; place-items:center; position:relative}
+    .hero-inner{display:grid; gap:24px; text-align:center}
+    .eyebrow{font-size:12px; text-transform:uppercase; letter-spacing:3px; color:var(--muted)}
+    h1{font-family: "Space Grotesk", Inter, sans-serif; font-size: clamp(34px, 7vw, 72px); line-height:1.05; margin:0}
+    .sub{font-size: clamp(16px, 2.4vw, 20px); color: var(--muted)}
+    .quick-actions{display:flex; justify-content:center; gap:14px; flex-wrap:wrap}
+
+    /* ====== Ticker (infinite skills) ====== */
+    .ticker-wrap{overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background: rgba(255,255,255,0.02)}
+    .ticker{display:flex; gap:40px; padding:16px 0; will-change:transform; animation: ticker 28s linear infinite}
+    .ticker:hover{animation-play-state: paused}
+    @keyframes ticker{from{transform: translateX(0)} to{transform: translateX(-50%)}}
+    .pill{padding:8px 14px; border-radius:999px; background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border:1px solid var(--border); box-shadow: inset 0 0 40px rgba(0,0,0,0.15)}
+
+    /* ====== Sections ====== */
+    .section-title{font-family:"Space Grotesk"; font-size: clamp(26px, 4vw, 40px); margin:0 0 14px}
+    .section-desc{color:var(--muted); margin:0 0 24px}
+
+    /* ====== About ====== */
+    .about{display:grid; grid-template-columns: 1.1fr .9fr; gap:28px}
+    .about-card{padding:24px; border-radius:22px; background:var(--glass); border:1px solid var(--border); box-shadow: var(--shadow)}
+    .facts{display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:16px}
+    .fact{padding:16px; border-radius:16px; background:linear-gradient( 135deg, rgba(0,229,255,0.12), rgba(122,92,255,0.12)); border:1px solid var(--border)}
+
+    /* ====== Projects ====== */
+    .projects{display:grid; grid-template-columns: repeat(12, 1fr); gap:20px}
+    .card{grid-column: span 6; background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border:1px solid var(--border); border-radius:20px; overflow:hidden; position:relative; transition: transform .3s ease, box-shadow .3s ease; box-shadow: var(--shadow)}
+    .card:hover{transform: translateY(-6px)}
+    .thumb{aspect-ratio: 16/9; background: radial-gradient( 60% 80% at 50% 0%, rgba(0,229,255,0.28), rgba(122,92,255,0.22), transparent 80%)}
+    .card-body{padding:18px}
+    .card h3{margin:0 0 6px}
+    .tagz{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .tag{font-size:12px; border:1px solid var(--border); padding:6px 10px; border-radius:999px; color:var(--muted)}
+
+    /* ====== Skills ====== */
+    .skills{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
+    .skill-col{grid-column: span 4; padding:20px; border-radius:18px; border:1px solid var(--border); background:var(--glass)}
+    .skill-list{display:flex; flex-wrap:wrap; gap:10px}
+
+    /* ====== Timeline (Education/Certs/Internships) ====== */
+    .timeline{position:relative; padding-left:26px}
+    .timeline:before{content:""; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(var(--accent), transparent)}
+    .time-item{margin:14px 0; padding:14px 16px; border-radius:14px; border:1px solid var(--border); background: rgba(255,255,255,0.03)}
+    .time-item .when{font-size:12px; color:var(--muted)}
+
+    /* ====== Contact ====== */
+    .contact-grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:24px}
+    form{display:grid; gap:14px}
+    input, textarea{width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--border); background: rgba(255,255,255,0.04); color:var(--text)}
+    textarea{min-height:140px; resize:vertical}
+
+    .footer{padding:26px 0; text-align:center; color:var(--muted); border-top:1px solid var(--border)}
+
+    /* ====== Responsive ====== */
+    @media (max-width: 980px){
+      .about, .contact-grid{grid-template-columns:1fr}
+      .projects .card{grid-column: span 12}
+      .skills .skill-col{grid-column: span 12}
+    }
+
+    /* ====== Cursor ring (fun) ====== */
+    .cursor{position:fixed; width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); pointer-events:none; mix-blend:difference; z-index:99; transform: translate(-50%, -50%)}
+  
+     :root{
+      --bg: #0b0f14;
+      --text:#e6f1ff;
+      --muted:#9fb3c8;
+      --accent:#00e5ff;
+      --accent2:#7a5cff;
+      --border: rgba(255,255,255,0.15);
+    }
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+
+    .container{width:min(1140px,90%);margin:auto}
+    section{padding:60px 0}
+
+    /* Skills ticker */
+    .ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02)}
+    .ticker{display:flex;gap:20px;padding:14px 0;animation:ticker 28s linear infinite;flex-wrap:nowrap}
+    .ticker:hover{animation-play-state:paused}
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .pill{
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.06);
+      font-size:14px;
+      white-space:nowrap;
+      display:inline-block;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width:768px){
+      .ticker{gap:12px;padding:10px 0;animation-duration:40s}
+      .pill{font-size:12px;padding:5px 12px}
+    }
+
+    .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 36px;              /* ✅ fix a consistent height */
+  line-height: 1;            /* ✅ prevents extra vertical spacing */
+  padding: 0 16px;           /* ✅ only horizontal padding */
+  
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(122,92,255,0.15));
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+#theone{
+    margin-top: 40px;
+}
+
+
+</style>
+</head>
+<body>
+  <!-- Infinite animated blobs -->
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+
+  <div class="cursor" id="cursor"></div>
+
+  <header>
+    <div class="container nav">
+      <div class="brand"><span class="dot"></span> <span>Gopalkrushna Sahu</span></div>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        <a class="btn" id="theone" href="Gopalkrushna_Sahu.pdf" download>Download CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero" aria-label="Introduction / Hero">
+      <div class="container hero-inner">
+        <div class="eyebrow">CSE @ PMEC • Web Dev • ML</div>
+        <h1>Turning ideas into smooth, <span style="background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent">animated</span> experiences.</h1>
+        <p class="sub">Hi, I’m <strong>Gopalkrushna Sahu</strong> — a Computer Science student crafting delightful interfaces and building intelligent systems. I love performance‑friendly motion, clean code, and responsive design.</p>
+        <div class="quick-actions">
+          <a class="btn" href="#projects">Explore Work</a>
+          <a class="btn" href="mailto:sahugopalkrushna2@gmail.com">Hire Me</a>
+          <a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn" href="https://www.linkedin.com/in/gopalkrushna-sahu-763516260" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills ticker (infinite) -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+          <span class="pill">C</span>
+          <span class="pill">Java</span>
+          <span class="pill">Python</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">HTML</span>
+          <span class="pill">CSS</span>
+          <span class="pill">Responsive Design</span>
+          <span class="pill">DSA</span>
+          <span class="pill">Git & GitHub</span>
+          <span class="pill">OpenCV</span>
+          <span class="pill">dlib</span>
+          <span class="pill">scikit-learn</span>
+          <span class="pill">SVM / MLP</span>
+          <span class="pill">PCA / LDA</span>
+          <!-- duplicate for seamless loop -->
+          <span class="pill">C</span>
+          <span class="pill">Java</span>
+          <span class="pill">Python</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">HTML</span>
+          <span class="pill">CSS</span>
+          <span class="pill">Responsive Design</span>
+          <span class="pill">DSA</span>
+          <span class="pill">Git & GitHub</span>
+          <span class="pill">OpenCV</span>
+          <span class="pill">dlib</span>
+          <span class="pill">scikit-learn</span>
+          <span class="pill">SVM / MLP</span>
+          <span class="pill">PCA / LDA</span>
+        </div>
+      </div>
+
+    <!-- About -->
+    <section id="about">
+      <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <p class="section-desc">Computer Science Engineering student at PMEC (2022–2026), currently preparing for GATE. Passionate about web development and machine learning, with an eye for micro‑interactions and performance‑first motion design.</p>
+        <div class="about">
+          <div class="about-card">
+            <h3>Profile Summary</h3>
+            <p>Strong foundation in <strong>C</strong>, <strong>Java</strong>, and <strong>Python</strong>; proficient with <strong>JavaScript</strong>, <strong>HTML</strong>, and <strong>CSS</strong> for responsive front‑ends. Comfortable with <strong>DSA</strong> and version control using <strong>Git/GitHub</strong>. I enjoy building things that feel alive without sacrificing accessibility and speed.</p>
+            <div class="facts">
+              <div class="fact"><strong>Location</strong><br/>Mayurbhanj, Odisha</div>
+              <div class="fact"><strong>CGPA</strong><br/>9.02</div>
+              <div class="fact"><strong>Languages</strong><br/>Odia • English • Hindi</div>
+              <div class="fact"><strong>Email</strong><br/><a href="mailto:sahugopalkrushna2@gmail.com">sahugopalkrushna2@gmail.com</a></div>
+            </div>
+          </div>
+          <div class="about-card">
+            <h3>Education</h3>
+            <div class="timeline">
+              <div class="time-item">
+                <div><strong>B.Tech — Computer Science Engineering</strong> • PMEC, Berhampur</div>
+                <div class="when">2022–2026 • CGPA 9.02</div>
+              </div>
+              <div class="time-item">
+                <div><strong>HSE (Science)</strong> • Prayas H.S. School</div>
+                <div class="when">2019–2021 • 84.9%</div>
+              </div>
+              <div class="time-item">
+                <div><strong>Secondary Education</strong> • Radhakrishna New Govt High School</div>
+                <div class="when">2018–2019 • 84.3%</div>
+              </div>
+            </div>
+            <h3 style="margin-top:20px">Internships</h3>
+            <div class="timeline">
+              <div class="time-item">
+                <div><strong>NIT Rourkela</strong> — Exploring ML Algorithms for Facial Expressions</div>
+                <div class="when">2025 • 2 Months</div>
+              </div>
+              <div class="time-item">
+                <div><strong>Agile Society, PMEC</strong> — Internet & Web Technology</div>
+                <div class="when">2024 • 1 Month</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+    <div class="container">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-desc">A selection of work highlighting web interfaces, data‑driven ML pipelines, and fun UI experiments.</p>
+      <div class="projects">
+        <!-- FER Project -->
+        <article class="card">
+          <div class="thumb">
+            <img src="photo1.jpg" alt="Facial Expression Recognition visualization">
+          </div>
+          <div class="card-body">
+            <h3>Facial Expression Recognition System</h3>
+            <p>Built an end‑to‑end pipeline from landmark extraction (OpenCV + dlib) to feature engineering (geometric, valence‑arousal, PCA, LDA) and model evaluation (SVM, tuned SVM, Logistic Regression, Random Forest, KNN, MLP) using scikit‑learn.</p>
+            <div class="tagz">
+              <span class="tag">Python</span>
+              <span class="tag">OpenCV</span>
+              <span class="tag">dlib</span>
+              <span class="tag">scikit‑learn</span>
+            </div>
+            <p style="margin-top:10px"><a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">View Code</a></p>
+          </div>
+        </article>
+
+        <!-- Expense Manager -->
+        <article class="card">
+          <div class="thumb">
+            <img src="photo2.jpg" alt="Expense Manager App UI">
+          </div>
+          <div class="card-body">
+            <h3>Expense Manager Tracking App</h3>
+            <p>Responsive web app to track expenses, visualize income vs. spend, set limits, and chat with an AI support bot for quick help. Built with HTML, CSS, and JavaScript.</p>
+            <div class="tagz">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Charts</span>
+            </div>
+            <p style="margin-top:10px"><a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">Live / Code</a></p>
+          </div>
+        </article>
+
+        <!-- Restaurant Website -->
+        <article class="card">
+          <div class="thumb">
+            <img src="photo3.jpg" alt="Restaurant website preview">
+          </div>
+          <div class="card-body">
+            <h3>Restaurant Website</h3>
+            <p>Modern menu browsing with responsive layout, contact options, and delightful micro‑interactions designed for quick discovery.</p>
+            <div class="tagz">
+              <span class="tag">Web</span>
+              <span class="tag">Responsive</span>
+              <span class="tag">UI/UX</span>
+            </div>
+            <p style="margin-top:10px"><a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">Preview</a></p>
+          </div>
+        </article>
+
+        <!-- Quiz App -->
+        <article class="card">
+          <div class="thumb">
+            <img src="photo4.jpg" alt="Quiz App interface">
+          </div>
+          <div class="card-body">
+            <h3>Quiz App</h3>
+            <p>A fast, student‑friendly quiz system with timers, question navigation, and randomization to enhance practice sessions.</p>
+            <div class="tagz">
+              <span class="tag">JavaScript</span>
+              <span class="tag">SPA</span>
+              <span class="tag">Accessibility</span>
+            </div>
+            <p style="margin-top:10px"><a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">Try It</a></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+    <!-- Skills & Expertise -->
+    <section id="skills">
+      <div class="container">
+        <h2 class="section-title">Skills & Expertise</h2>
+        <p class="section-desc">Balanced between <em>front‑end craft</em> and <em>ML engineering</em>.</p>
+        <div class="skills">
+          <div class="skill-col">
+            <h3>Programming</h3>
+            <div class="skill-list">
+              <span class="pill">C</span>
+              <span class="pill">Java</span>
+              <span class="pill">Python</span>
+              <span class="pill">JavaScript</span>
+            </div>
+          </div>
+          <div class="skill-col">
+            <h3>Web Development</h3>
+            <div class="skill-list">
+              <span class="pill">HTML</span>
+              <span class="pill">CSS</span>
+              <span class="pill">Responsive UI</span>
+              <span class="pill">Animations</span>
+              <span class="pill">Accessibility</span>
+            </div>
+          </div>
+          <div class="skill-col">
+            <h3>ML & Tools</h3>
+            <div class="skill-list">
+              <span class="pill">OpenCV</span>
+              <span class="pill">dlib</span>
+              <span class="pill">scikit‑learn</span>
+              <span class="pill">PCA/LDA</span>
+              <span class="pill">SVM • MLP</span>
+              <span class="pill">Git & GitHub</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:28px">Certifications</h3>
+        <div class="timeline">
+          <div class="time-item"><strong>NIT Rourkela (2025)</strong> — Exploring Different ML Algorithms for Facial Expressions</div>
+          <div class="time-item"><strong>PMEC (2024)</strong> — Internet & Web Technology</div>
+          <div class="time-item"><strong>Udemy</strong> — The Complete 2023 Web Development Bootcamp</div>
+          <div class="time-item"><strong>Agile Society, PMEC</strong> — Git & GitHub Workshop</div>
+          <div class="time-item"><strong>Coursera</strong> — Introduction to Generative AI</div>
+          <div class="time-item"><strong>Coursera</strong> — Get Started with Spreadsheet Applications: Excel</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <h2 class="section-title">Let’s Build Something</h2>
+        <p class="section-desc">Have an idea, project, or internship opportunity? I’m available for collabs and freelance work.</p>
+        <div class="contact-grid">
+          <div class="about-card">
+            <h3>Contact Info</h3>
+            <p><strong>Email:</strong> <a href="mailto:sahugopalkrushna2@gmail.com">sahugopalkrushna2@gmail.com</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+916371414506">+91 63714 14506</a></p>
+            <p><strong>Location:</strong> Mayurbhanj, Odisha, PIN 757040</p>
+            <p class="section-desc">Prefer socials? Connect here:</p>
+            <p>
+              <a class="btn" href="https://github.com/Gksahu2004" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn" href="https://www.linkedin.com/in/gopalkrushna-sahu-763516260" target="_blank" rel="noopener">LinkedIn</a>
+            </p>
+          </div>
+          <div class="about-card">
+            <h3>Quick Message</h3>
+            <form action="https://formspree.io/f/mbjvlnle" method="POST">
+              <input name="name" placeholder="Your Name" required />
+              <input name="email" placeholder="Your Email" type="email" required />
+              <textarea name="message" placeholder="Tell me about your project..." required></textarea>
+              <button class="btn" type="submit">Send Message</button>
+              <div style="font-size:12px; color:var(--muted)">No tracking. You can also email me directly.</div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    
+  </main>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> • Designed & built by <strong>Gopalkrushna Sahu</strong> with performance‑friendly animations.</div>
+  </footer>
+
+  <script>
+    // ====== Cursor ring ======
+    const cursor = document.getElementById('cursor');
+    window.addEventListener('mousemove', (e)=>{
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // ====== Scroll reveal with GSAP ======
+    window.addEventListener('load', () => {
+      const tl = gsap.timeline();
+      tl.from('.brand, .nav-links a', {y:-20, opacity:0, stagger:0.06, duration:0.6, ease:'power3.out'})
+        .from('.hero .eyebrow',{y:20, opacity:0, duration:0.5}, '-=0.2')
+        .from('.hero h1',{y:20, opacity:0, duration:0.6}, '-=0.35')
+        .from('.hero .sub',{y:20, opacity:0, duration:0.6}, '-=0.45')
+        .from('.quick-actions .btn',{y:16, opacity:0, stagger:0.05, duration:0.5}, '-=0.45');
+
+      gsap.utils.toArray('section').forEach((sec)=>{
+        gsap.from(sec.querySelectorAll('h2, .section-desc, .about-card, .card, .skill-col, .timeline .time-item, .contact-grid .about-card'), {
+          scrollTrigger: {trigger: sec, start: 'top 78%'},
+          y: 26, opacity: 0, duration: 0.8, ease:'power3.out', stagger: 0.08
+        });
+      });
+    });
+
+    // ====== Smooth scroll ======
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+      })
+    });
+
+    // ====== Hover tilt for project cards ======
+    document.querySelectorAll('.card').forEach(card=>{
+      const strength = 12;
+      card.addEventListener('mousemove', (e)=>{
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left; const y = e.clientY - r.top;
+        const rx = ((y / r.height) - 0.5) * -strength;
+        const ry = ((x / r.width) - 0.5) * strength;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+      });
+      card.addEventListener('mouseleave', ()=>{
+        card.style.transform = '';
+      });
+    });
+
+    // ====== Dynamic year ======
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
